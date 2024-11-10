@@ -13,7 +13,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function setAuth () {
     const auth = await useAPI('auth/public/get')
-    isAdmin.value = auth.type > 1
+    isAdmin.value = auth.type > 0
     isLogin.value = true
     profile.value = auth 
   }
