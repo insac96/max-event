@@ -20,8 +20,18 @@ export default defineEventHandler(async (event) => {
       '$inc' : { 
         'payment': money,
         'currency.wheel': wheel,
+        'currency.coin': money,
       }
     }, { new: true }).select('currency') as IDBUser
+
+    await DB.LogAddCoin.create({
+      from: auth._id,
+      to: user._id,
+      add: money,
+      start: user.currency.coin,
+      end: update.currency.coin,
+      reason: `Nạp ${money.toLocaleString('vi-VN')} VNĐ`
+    })
 
     if(wheel > 0){
       await DB.LogAddWheel.create({
