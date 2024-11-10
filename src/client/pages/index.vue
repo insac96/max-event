@@ -1,9 +1,12 @@
 <template>
-  <UiFlex type="col" justify="center" class="pt-16">
+  <UiFlex type="col" justify="center" class="py-16">
     <UiFlex type="col" justify="center" class="mb-6">
-      <UiText weight="bold" align="center" class="text-3xl md:text-4xl mb-2">Vòng Quay May Mắn</UiText>
-      <UiText color="gray" class="text-sm md:text-base mb-4" align="center">
+      <UiText weight="bold" align="center" class="text-3xl md:text-5xl md:mb-3 mb-2 Slogan">Vòng Quay May Mắn</UiText>
+      <UiText color="gray" class="text-sm md:text-lg mb-1" align="center">
         Nhận <b class="text-primary">1</b> lượt quay với mỗi <b class="text-primary">{{ useMoney().toMoney(configStore.config.wheel.payto) }}</b> tiền nạp
+      </UiText>
+      <UiText color="gray" class="text-xs mb-4 italic max-w-[200px] md:max-w-full" align="center">
+        Không cộng dồn với hoạt động nạp tiền khác
       </UiText>
       <div class="ribbon" v-if="!!authStore.isLogin">
         <b class="font-bold">{{ authStore.profile.currency.wheel }}</b> lượt
@@ -13,7 +16,7 @@
     <UiFlex class="Circle rounded-full" justify="center" :style="{
       '--wheel-circle-deg': deg.now+'deg',
     }">
-      <canvas id="Canvas" width="380" height="380"></canvas>
+      <canvas id="Canvas" :width="size" :height="size"></canvas>
       <UiFlex justify="center" class="Circle__Start bg-gray-900" @click="start">
         <UiIcon name="i-bxs-color" class="beat-anim" size="10" v-if="!loading.spin"></UiIcon>
         <UiIcon name="i-bxs-color" class="animate-spin" size="10" v-else></UiIcon>
@@ -27,20 +30,37 @@
         <UiText align="center" weight="semibold" v-else>Chúc bạn may mắn lần sau</UiText>
       </UiFlex>
     </UModal>
+
+    <UiFlex type="col" justify="center" class="mt-24 mb-6">
+      <UiText weight="bold" align="center" class="text-3xl md:text-5xl md:mb-3 mb-2 Slogan">Lucky</UiText>
+      <UiText color="gray" class="text-sm md:text-lg mb-1" align="center">
+        Danh sách những người may mắn
+      </UiText>
+    </UiFlex>
+
+    <div class="w-full max-w-[800px]">
+      <DataWheelLucky class=""/>
+    </div>
   </UiFlex>
 </template>
 
 <script setup>
 const configStore = useConfigStore()
 const authStore = useAuthStore()
+const { isMobile } = useDevice()
 
 const gift = ref(undefined)
-const prizes = ref(['?', '?', '?', '?', '?', '?', '?', '?'])
+const prizes = ref([])
 
 const colors = [
   "#FF5733", "#33FF57", "#3357FF", "#FF33A1", "#FF9933", "#33FFF0",
   "#F033FF", "#33FF99", "#FF5733", "#9933FF", "#33A1FF", "#FF3377"
 ]
+
+const size = computed(() => {
+  if(!!isMobile) return 350
+  return 450
+})
 
 const modal = ref(false)
 const loading = ref({
@@ -55,7 +75,7 @@ const deg = ref({
 const canvasPos = ref({
   el: undefined,
   ctx: undefined,
-  radius: 190,
+  radius: size.value / 2,
   centerX: 0,
   centerY: 0,
 })
@@ -86,8 +106,8 @@ const drawWheel = () => {
     canvasPos.value.ctx.rotate(sliceAngle.value * i + sliceAngle.value / 2 + 0);
     canvasPos.value.ctx.textAlign = "right";
     canvasPos.value.ctx.fillStyle = "#333";
-    canvasPos.value.ctx.font = "16px Arial";
-    canvasPos.value.ctx.fillText(prizes.value[i]['name'], canvasPos.value.radius - 50, 5);
+    canvasPos.value.ctx.font = "bold 12px Montserrat, sans-serif";
+    canvasPos.value.ctx.fillText(prizes.value[i]['name'], canvasPos.value.radius - 20, 5);
     canvasPos.value.ctx.restore();
   }
 }
@@ -191,4 +211,19 @@ onMounted(() => setTimeout(() => (initCanvas(), getList()), 1))
   clip-path: polygon(0 100%, var(--s) 100%, calc(var(--s) + var(--d)) calc(100% - var(--d)), calc(100% - var(--s) - var(--d)) calc(100% - var(--d)), calc(100% - var(--s)) 100%, 100% 100%, calc(100% - var(--c)) calc(50% + var(--d)/2), 100% var(--d), calc(100% - var(--s)) var(--d), calc(100% - var(--s) - var(--d)) 0, calc(var(--s) + var(--d)) 0, var(--s) var(--d), 0 var(--d), var(--c) calc(50% + var(--d)/2))
   background-color: rgb(var(--color-primary-500))
   width: fit-content
+
+.Slogan
+  background: linear-gradient(to right,#FFFFFF 10%, #ffffff00 50%, #FFFFFF 60%)
+  background-size: auto auto
+  background-clip: border-box
+  background-size: 200% auto
+  background-clip: text
+  text-fill-color: transparent
+  -webkit-background-clip: text
+  -webkit-text-fill-color: transparent
+  animation: textclip 2s linear infinite
+
+@keyframes textclip
+  to
+    background-position: -200% center
 </style>

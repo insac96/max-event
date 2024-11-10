@@ -1,12 +1,12 @@
 <template>
   <div>
-    <UiFlex>
-      <USelectMenu v-model="page.size" :options="[5,10,20,50,100]" class="mr-1" />
-    </UiFlex>
-
     <LoadingTable v-if="loading" />
 
-    <UTable v-model:sort="page.sort" :columns="columns" :rows="list">
+    <UTable v-model:sort="page.sort" :columns="columns" :rows="list" class="BoxBlock rounded-xl">
+      <template #user-data="{ row }">
+        {{ row.user.username }}
+      </template>
+
       <template #createdAt-data="{ row }">
         {{ useDayJs().displayFull(row.createdAt) }}
       </template>
@@ -26,15 +26,14 @@ const list = ref([])
 
 const columns = [
   {
+    key: 'user',
+    label: 'Tài khoản',
+  },{
     key: 'name',
     label: 'Phần thưởng',
   },{
-    key: 'amount',
-    label: 'Số lượng',
-  },{
     key: 'createdAt',
-    label: 'Thời gian',
-    sortable: true
+    label: 'Thời gian'
   }
 ]
 
@@ -55,7 +54,7 @@ watch(() => page.value.sort.direction, () => getList())
 const getList = async () => {
   try {
     loading.value = true
-    const data = await useAPI('wheel/public/history', JSON.parse(JSON.stringify(page.value)))
+    const data = await useAPI('wheel/public/lucky', JSON.parse(JSON.stringify(page.value)))
     
     list.value = data.list
     page.value.total = data.total

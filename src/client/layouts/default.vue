@@ -10,7 +10,3 @@
 
 <script setup>
 </script>
-
-<style lang="sass">
-.LayoutPublic
-</style>
