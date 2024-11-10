@@ -1,0 +1,54 @@
+<template>
+  <UiContent title="Đăng Nhập" sub="Xác thực tài khoản của bạn" no-dot>
+    <UForm :validate="validate" :state="state" @submit="submit">
+      <UFormGroup label="Số điện thoại" name="phone">
+        <UInput icon="i-bxs-phone" v-model="state.phone" />
+      </UFormGroup>
+
+      <UFormGroup label="Mật khẩu" name="password">
+        <UInput icon="i-bxs-lock" v-model="state.password" type="password" />
+      </UFormGroup>
+
+      <UiFlex justify="between" class="mt-4">
+        <UiText pointer size="sm" color="gray" @click="emit('up')">Đăng ký tài khoản ?</UiText>
+        <UButton type="submit" :loading="loading">Đăng Nhập</UButton>
+      </UiFlex>
+
+      <AuthSignSocial class="mt-4" />
+    </UForm>
+  </UiContent>
+</template>
+
+<script setup>
+const authStore = useAuthStore()
+const emit = defineEmits(['done', 'up'])
+
+const loading = ref(false)
+
+const state = ref({
+  phone: undefined,
+  password: undefined
+})
+
+const validate = (state) => {
+  const errors = []
+  if (!state.phone) errors.push({ path: 'phone', message: 'Vui lòng nhập đầy đủ' })
+  if (!state.password) errors.push({ path: 'password', message: 'Vui lòng nhập đầy đủ' })
+  return errors
+}
+
+const submit = async () => {
+  try {
+    loading.value = true
+
+    await useAPI('auth/public/sign/in', JSON.parse(JSON.stringify(state.value)))
+    await authStore.setAuth()
+
+    loading.value = false
+    emit('done')
+  }
+  catch (e) {
+    loading.value = false
+  }
+}
+</script>
