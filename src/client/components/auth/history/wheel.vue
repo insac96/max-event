@@ -10,6 +10,11 @@
       <template #createdAt-data="{ row }">
         {{ useDayJs().displayFull(row.createdAt) }}
       </template>
+
+      <template #received-data="{ row }">
+        <UBadge size="xs" color="green" variant="soft" v-if="!!row.received">Đã trao</UBadge>
+        <UBadge size="xs" color="gray" variant="soft" v-if="!row.received">Chưa trao</UBadge>
+      </template>
     </UTable>
 
     <UiFlex justify="end" class="mt-4">
@@ -35,6 +40,9 @@ const columns = [
     key: 'createdAt',
     label: 'Thời gian',
     sortable: true
+  },{
+    key: 'received',
+    label: 'Trạng thái',
   }
 ]
 

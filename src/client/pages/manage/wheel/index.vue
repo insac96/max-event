@@ -47,7 +47,7 @@
           <UInput v-model="stateAdd.name" />
         </UFormGroup>
 
-        <UFormGroup label="Số lượng" v-if="stateAdd.type == 1">
+        <UFormGroup label="Tổng giải">
           <UInput v-model="stateAdd.amount" type="number" />
         </UFormGroup>
 
@@ -69,7 +69,7 @@
           <UInput v-model="stateEdit.name" />
         </UFormGroup>
 
-        <UFormGroup label="Số lượng" v-if="stateEdit.type == 1">
+        <UFormGroup label="Tổng giải">
           <UInput v-model="stateEdit.amount" type="number" />
         </UFormGroup>
 
@@ -101,7 +101,7 @@ const columns = [
     label: 'Tên quà',
   },{
     key: 'amount',
-    label: 'Số lượng',
+    label: 'Tổng giải',
     sortable: true
   },{
     key: 'percent',
@@ -133,7 +133,7 @@ watch(() => page.value.sort.direction, () => getList())
 const stateAdd = ref({
   type: 1,
   name: null,
-  amount: 1,
+  amount: null,
   percent: null,
 })
 const stateEdit = ref({
@@ -152,7 +152,7 @@ const modal = ref({
 watch(() => modal.value.add, (val) => !val && (stateAdd.value = {
   type: 1,
   name: null,
-  amount: 1,
+  amount: null,
   percent: null,
 }))
 

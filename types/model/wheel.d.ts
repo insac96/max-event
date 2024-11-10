@@ -22,6 +22,9 @@ export interface IDBWheelHistory {
   name: string
   amount: number
   percent: number
+
+  received: boolean
+  giver: Types.ObjectId
 }
 
 export interface IDBWheelLucky {

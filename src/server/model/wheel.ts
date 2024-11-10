@@ -23,6 +23,9 @@ export const DBWheelHistory = (mongoose : Mongoose) => {
     name: { type: String },
     amount: { type: Number, index: true },
     percent: { type: Number, index: true },
+
+    received: { type: Boolean, default: false },
+    giver: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
   }, {
     timestamps: true
   })

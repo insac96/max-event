@@ -30,6 +30,15 @@
         <template #createdAt-data="{ row }">
           {{ useDayJs().displayFull(row.createdAt) }}
         </template>
+
+        <template #actions-data="{ row }">
+          <span v-if="row.type == 0">...</span>
+          <div v-else>
+            <UBadge size="xs" color="green" variant="soft" v-if="!!row.received">Đã trao</UBadge>
+            <UButton size="xs" v-else color="gray" :disabled="loading.action" @click="action(row._id)">Trao quà</UButton>
+          </div>
+          
+        </template>
       </UTable>
     </UCard>
 
@@ -64,6 +73,9 @@ const columns = [
     key: 'createdAt',
     label: 'Thời gian',
     sortable: true
+  },{
+    key: 'actions',
+    label: 'Trao quà',
   }
 ]
 const selectedColumns = ref([...columns])
@@ -90,6 +102,7 @@ watch(() => page.value.search.key, (val) => !val && getList())
 // Loading
 const loading = ref({
   load: true,
+  action: false
 })
 
 const typeFormat = {
@@ -106,6 +119,22 @@ const getList = async () => {
     loading.value.load = false
     list.value = data.list
     page.value.total = data.total
+  }
+  catch (e) {
+    loading.value.load = false
+  } 
+}
+
+// Action
+const action = async (_id) => {
+  try {
+    loading.value.action = true
+    const data = await useAPI('wheel/manage/action', {
+      _id: _id
+    })
+
+    loading.value.action = false
+    getList()
   }
   catch (e) {
     loading.value.load = false

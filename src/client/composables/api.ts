@@ -7,7 +7,6 @@ export const useAPI = async (path : string, post?: any, options: any = {}) => {
     ...options
   }
 
-  // @ts-expect-error
   const { data, error } = await useFetch(`/api/${path}`, option)
 
   if(error.value) {
