@@ -23,13 +23,7 @@
       </UiFlex>
     </UiFlex>
 
-    <UModal v-model="modal" :ui="{width: 'sm:max-w-[250px] max-w-[250px]'}">
-      <UiFlex type="col" class="py-12 px-4 cursor-pointer" justify="center" v-if="gift" @click="modal = false">
-        <UiIcon :name="gift.type != 0 ? 'i-bxs-party' : 'i-bxs-sad'" class="jump-anim mb-6" size="16"></UiIcon>
-        <UiText align="center" v-if="gift.type != 0">Chúc mừng bạn nhận được <b class="text-primary font-bold">x{{ gift.amount }} [{{ gift.name }}]</b></UiText>
-        <UiText align="center" weight="semibold" v-else>Chúc bạn may mắn lần sau</UiText>
-      </UiFlex>
-    </UModal>
+    <UButton icon="i-bx-search" class="my-4" variant="soft" @click="view = true">Xem Giải Thưởng</UButton>
 
     <UiFlex type="col" justify="center" class="mt-24 mb-6">
       <UiText weight="bold" align="center" class="text-3xl md:text-5xl md:mb-3 mb-2 Slogan">Lucky</UiText>
@@ -39,8 +33,25 @@
     </UiFlex>
 
     <div class="w-full max-w-[800px]">
-      <DataWheelLucky class=""/>
+      <DataWheelLucky />
     </div>
+
+    <UModal v-model="modal" :ui="{width: 'sm:max-w-[250px] max-w-[250px]'}">
+      <UiFlex type="col" class="py-12 px-4 cursor-pointer" justify="center" v-if="gift" @click="modal = false">
+        <UiIcon :name="gift.type != 0 ? 'i-bxs-party' : 'i-bxs-sad'" class="jump-anim mb-6" size="16"></UiIcon>
+        <UiText align="center" v-if="gift.type != 0">Chúc mừng bạn nhận được <b class="text-primary font-bold">[{{ gift.name }}]</b></UiText>
+        <UiText align="center" weight="semibold" v-else>Chúc bạn may mắn lần sau</UiText>
+      </UiFlex>
+    </UModal>
+
+    <UModal v-model="view">
+      <UiContent title="Phần Thưởng" sub="Danh sách phần thưởng" class="p-4">
+        <template #more>
+          <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="view = false"></UButton>
+        </template>
+        <DataWheelView></DataWheelView>
+      </UiContent>
+    </UModal>
   </UiFlex>
 </template>
 
@@ -63,6 +74,7 @@ const size = computed(() => {
 })
 
 const modal = ref(false)
+const view = ref(false)
 const loading = ref({
   list: true,
   spin: false
