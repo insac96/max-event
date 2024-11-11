@@ -3,12 +3,10 @@
     <LoadingTable v-if="loading" />
 
     <UTable :columns="columns" :rows="list" class="BoxBlock rounded-xl">
-      <template #user-data="{ row }">
-        {{ row.user.username }}
-      </template>
-
-      <template #createdAt-data="{ row }">
-        {{ useDayJs().displayFull(row.createdAt) }}
+      <template #name-data="{ row }">
+        <UiText color="rose" weight="semibold" v-if="row.percent == 0">{{ row.name }}</UiText>
+        <UiText color="green" v-else-if="row.percent < 1">{{ row.name }}</UiText>
+        <UiText v-else>{{ row.name }}</UiText>
       </template>
     </UTable>
   </div>
@@ -26,14 +24,14 @@ const columns = [
     label: 'Phần thưởng',
   },{
     key: 'amount',
-    label: 'Tổng giải',
+    label: 'Số giải còn lại',
   }
 ]
 
 const getList = async () => {
   try {
     loading.value = true
-    const data = await useAPI('wheel/public/list')
+    const data = await useAPI('wheel/public/view')
     
     list.value = data
     loading.value = false
