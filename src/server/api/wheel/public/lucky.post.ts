@@ -7,16 +7,16 @@ export default defineEventHandler(async (event) => {
     const sorting : any = { }
     sorting[sort.column] = sort.direction == 'desc' ? -1 : 1
 
-    const match : any = { }
+    const match : any = { percent: { $lt: 3 } }
 
-    const list = await DB.WheelLucky
+    const list = await DB.WheelHistory
     .find(match)
     .populate({ path: 'user', select: 'username' })
     .sort(sorting)
     .limit(size)
     .skip((current - 1) * size)
 
-    const total = await DB.WheelLucky.count(match)
+    const total = await DB.WheelHistory.count(match)
     return resp(event, { result: { list, total } })
   } 
   catch (e:any) {
